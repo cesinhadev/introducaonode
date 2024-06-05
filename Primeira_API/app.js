@@ -1,9 +1,32 @@
-const http = require('http');
+import http from 'http';
+import fs from 'fs';
+
+fs.writeFile('./mensagem.txt', 'Olá, TIC em Trilha do arquivo', 'utf-8', (erro) => {
+    if(erro){
+        console.log('Falha ao escrever o arquivo.', erro)
+    }
+
+    console.log('Arquivo criado com sucesso')
+});
+
+
+const mensagem = fs.readFile('./mensagem.txt', 'utf-8', (erro, conteudo) =>{
+    if(erro){
+        console.log('Falha na leitura do arquivo', (erro))
+        return;
+    }
+
+    console.log(`Conteudo: ${conteudo}` )
+
+    return conteudo;
+})
+
+
 
 const servidor = http.createServer((req, res) => {
     res.statusCode = 200;
     res.setHeader('Content-type', 'text/plain; charset=utf-8')
-    res.end('Olá, TIC em trilha')
+    res.end(mensagem)
 });
 
 const porta = 3000;
@@ -14,7 +37,7 @@ servidor.listen(porta,host, () => {
 })
 
 
-function exemploTradicional(){
+/*function exemploTradicional(){
     console.log('Tradicional')
 };
 
@@ -24,4 +47,4 @@ const exemploExpressao = function(){
 
 const exemploArrow = () => {
     console.log('Arrow')
-};
+};*/
