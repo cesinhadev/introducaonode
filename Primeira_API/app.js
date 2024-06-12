@@ -1,5 +1,6 @@
 import http from 'http';
 import fs from 'fs';
+import rotas from './routes.js'
 
 fs.writeFile('./mensagem.txt', 'Olá, TIC em Trilha do arquivo', 'utf-8', (erro) => {
     if(erro){
@@ -10,7 +11,7 @@ fs.writeFile('./mensagem.txt', 'Olá, TIC em Trilha do arquivo', 'utf-8', (erro)
 });
 
 
-const mensagem = fs.readFile('./mensagem.txt', 'utf-8', (erro, conteudo) =>{
+fs.readFile('./mensagem.txt', 'utf-8', (erro, conteudo) =>{
     if(erro){
         console.log('Falha na leitura do arquivo', (erro))
         return;
@@ -18,23 +19,24 @@ const mensagem = fs.readFile('./mensagem.txt', 'utf-8', (erro, conteudo) =>{
 
     console.log(`Conteudo: ${conteudo}` )
 
-    return conteudo;
+    iniciaServidor(conteudo);
 })
 
+function iniciaServidor(mensagem){
+    const servidor = http.createServer((req, res) => {
+        res.statusCode = 200;
+        res.setHeader('Content-type', 'text/plain; charset=utf-8')
+        res.end(mensagem)
+    });
+    
+    const porta = 3000;
+    const host = 'localhost';
+    
+    servidor.listen(porta,host, () => {
+        console.log(`Servidor esta executando em http://${host}:${porta}`);
+    })    
+}
 
-
-const servidor = http.createServer((req, res) => {
-    res.statusCode = 200;
-    res.setHeader('Content-type', 'text/plain; charset=utf-8')
-    res.end(mensagem)
-});
-
-const porta = 3000;
-const host = 'localhost';
-
-servidor.listen(porta,host, () => {
-    console.log(`Servidor esta executando em http://${host}:${porta}`);
-})
 
 
 /*function exemploTradicional(){
