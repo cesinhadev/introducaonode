@@ -16,7 +16,7 @@ export default function rotas(req, res, dado){
     }
     if(req.method === 'PUT' && req.url === '/arquivos'){
         const body = [];
-
+        
         req.on('data', (parte) => {
             body.push(parte);
         });
@@ -78,6 +78,8 @@ export default function rotas(req, res, dado){
                 }
             };
             res.end(JSON.stringify(resposta));
+
+            return;
         })
 
 
@@ -94,4 +96,5 @@ export default function rotas(req, res, dado){
         };
                 
     res.end(JSON.stringify(resp));
+    return;
 }
