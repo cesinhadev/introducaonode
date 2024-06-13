@@ -22,7 +22,7 @@ fs.readFile('./mensagem.txt', 'utf-8', (erro, conteudo) =>{
     iniciaServidor(conteudo);
 })
 
-function iniciaServidor(mensagem){
+function iniciaServidor(conteudo){
     const servidor = http.createServer((req, res) => {
         rotas(req, res, { conteudo } )
     });
