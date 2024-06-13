@@ -24,9 +24,7 @@ fs.readFile('./mensagem.txt', 'utf-8', (erro, conteudo) =>{
 
 function iniciaServidor(mensagem){
     const servidor = http.createServer((req, res) => {
-        res.statusCode = 200;
-        res.setHeader('Content-type', 'text/plain; charset=utf-8')
-        res.end(mensagem)
+        rotas(req, res, { conteudo } )
     });
     
     const porta = 3000;
