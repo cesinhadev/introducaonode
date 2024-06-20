@@ -191,6 +191,8 @@ export default function rotas(req, res, dado){
         return;
     
     }
+
+    // Remoção de arquivo
     if(req.method === 'DELETE' && req.url === '/arquivos'){
         const body = [];
         
