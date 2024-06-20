@@ -81,9 +81,7 @@ export default function rotas(req, res, dado){
 
             return;
         })
-
-
-
+        return;
     }
 
     res.statusCode = 404;
