@@ -47,3 +47,30 @@ export async function listaProduto(){
     }
     
 }
+export async function ListaProdutoPorId(id){
+    try{
+        const itens = await Produto.findByPk(id);
+        console.log(`Produto listado com sucesso!`, itens);
+    }catch(erro){
+        console.log('Erro ao ler produto', erro);
+    }
+    
+}
+export async function atualizaProduto(id,dadoProduto){
+    try{
+        const itens = await Produto.update(dadoProduto, {where: { id:id }});
+        console.log(`Produto atualizado com sucesso!`, itens);
+    }catch(erro){
+        console.log('Erro ao atualizar produto', erro);
+    }
+    
+}
+export async function deletaProduto(id){
+    try{
+        const itens = await Produto.destroy({where: { id:id }});
+        console.log(`Produto deletado com sucesso!`, itens);
+    }catch(erro){
+        console.log('Erro ao deletar produto', erro);
+    }
+    
+}

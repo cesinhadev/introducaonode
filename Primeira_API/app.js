@@ -2,6 +2,7 @@ import http from 'http';
 import fs from 'fs';
 import rotas from './routes.js';
 import sqlite3 from 'sqlite3';
+import { sequelize, criaProduto, listaProduto, atualizaProduto, ListaProdutoPorId, deletaProduto } from './models.js';
 
 
 
@@ -34,7 +35,19 @@ fs.readFile('./mensagem.txt', 'utf-8', (erro, conteudo) =>{
     iniciaServidor(conteudo);
 })
 
-function iniciaServidor(conteudo){
+async function iniciaServidor(conteudo){
+    await sequelize.sync();
+
+    await criaProduto({nome: 'Açaí Tradicional', preco: 12.50});
+    await criaProduto({nome: 'Açaí com Frutas', preco: 15.50});
+    await criaProduto({nome: 'Açaí com Granola', preco: 13.40});
+    await listaProduto();
+    await ListaProdutoPorId(3);
+    await ListaProdutoPorId(20);
+    await atualizaProduto(2, {preco: 14.55});
+    await deletaProduto(3);
+
+
     const servidor = http.createServer((req, res) => {
         rotas(req, res, { conteudo } )
     });
