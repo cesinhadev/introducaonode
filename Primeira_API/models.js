@@ -44,8 +44,10 @@ export async function listaProduto(){
     try{
         const itens = await Produto.findAll();
         console.log(`Produtos listados com sucesso!`, itens);
+        return itens
     }catch(erro){
         console.log('Erro ao ler produto', erro);
+        throw erro;
     }
     
 }
@@ -53,15 +55,23 @@ export async function ListaProdutoPorId(id){
     try{
         const itens = await Produto.findByPk(id);
         console.log(`Produto listado com sucesso!`, itens);
+        return itens;
     }catch(erro){
         console.log('Erro ao ler produto', erro);
+        throw erro;
     }
     
 }
 export async function atualizaProduto(id,dadoProduto){
     try{
         const itens = await Produto.update(dadoProduto, {where: { id:id }});
-        console.log(`Produto atualizado com sucesso!`, itens);
+        if(!id.value && !dadoProduto.value){
+            
+            console.log(`Produto não existe`);
+        }else{
+            console.log(`Produto atualizado com sucesso!`, itens);
+        }
+
         return itens;
     }catch(erro){
         console.log('Erro ao atualizar produto', erro);
@@ -72,7 +82,13 @@ export async function atualizaProduto(id,dadoProduto){
 export async function deletaProduto(id){
     try{
         const itens = await Produto.destroy({where: { id:id }});
-        console.log(`Produto deletado com sucesso!`, itens);
+        if(!id.value){
+            
+            console.log(`Produto não existe`);
+        }else{
+            
+            console.log(`Produto deletado com sucesso!`, itens);
+        }
     }catch(erro){
         console.log('Erro ao deletar produto', erro);
         throw erro;

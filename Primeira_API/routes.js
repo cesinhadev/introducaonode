@@ -1,24 +1,67 @@
-import fs from 'fs';
+
 import { sequelize, criaProduto, listaProduto, atualizaProduto, ListaProdutoPorId, deletaProduto } from './models.js';
 
 export default async function rotas(req, res, dado){
     res.setHeader('Content-type', 'application/json', 'utf-8');
 
-    if(req.method === 'GET' && req.url === '/'){
-        const { conteudo } = dado;
+    // Listar todos os produtos
+    if(req.method === 'GET' && req.url === '/produtos'){
+        try{
+            const resposta = await listaProduto(); 
 
-        res.statusCode = 200;
-        const resposta = {
-            mensagem: conteudo
+            res.statusCode = 200;
+
+            res.end(JSON.stringify(resposta));
+
+            return;
+        }catch(erro){
+            console.log('Falha ao listar produtos');
+            res.statusCode=500;
+
+            const resposta ={
+                erro:{
+                    mensagem: `Falha ao listar produtos`
+                }
+            };
+
+            res.end(JSON.stringify(resposta));
+
+            return;
         }
-        res.end(JSON.stringify(resposta));
-
-        return;
     }
 
+    // Buscar produto pelo identificador unico
+    if(req.method === 'GET' && req.url.split('/')[1] === 'produtos' && !isNaN(req.url.split('/')[2])){
+        const id = req.url.split('/')[2];
+
+        try{
+            const resposta = await ListaProdutoPorId(id);
+
+            res.statusCode = 200;
+
+            res.end(JSON.stringify(resposta));
+    
+            return;
+
+        }catch(erro){
+            console.log('Falha ao buscar o produto', erro);
+
+            res.statusCode = 500;
+
+            const resposta = {
+                erro: {
+                    mensagem: `Falha ao buscar o produto ${id}` 
+                }
+            };
+
+            res.end(JSON.stringify(resposta))
+            return;
+        }
+
+    };
     //Criação de produto
 
-    if(req.method === 'POST' && req.url === '/produto'){
+    if(req.method === 'POST' && req.url === '/produtos'){
         const body = [];
         
         req.on('data', (parte) => {
@@ -34,7 +77,7 @@ export default async function rotas(req, res, dado){
             if(!produto?.nome ){
                 const resposta = {
                     erro: {
-                        mensagem: `O atributo 'nome' ou  não foi encontrado, porém um deles é obrigatório para criação do produto` 
+                        mensagem: `O atributo 'nome' não foi encontrado, porém um deles é obrigatório para criação do produto` 
                     }
                 };
 
@@ -130,6 +173,11 @@ export default async function rotas(req, res, dado){
                 const resposta = await atualizaProduto(id, produto);
 
                 res.statusCode = 200;
+                
+                if(!id.value && !produto.value){
+                   
+                    res.statusCode = 404; 
+                }
     
                 res.end(JSON.stringify(resposta));
 
@@ -174,6 +222,16 @@ export default async function rotas(req, res, dado){
 
         try{
             const resposta = await deletaProduto(id);
+            
+            res.statusCode = 204;
+            if(!id.value){
+                   
+                res.statusCode = 404; 
+            }
+
+            res.end();
+    
+            return;
         }catch(erro){
             console.log('Falha ao remover o produto', erro);
 
@@ -181,7 +239,7 @@ export default async function rotas(req, res, dado){
 
             const resposta = {
                 erro: {
-                    mensagem: `Falha ao remover o produto ${produto.nome}` 
+                    mensagem: `Falha ao remover o produto ${id}` 
                 }
             };
 
@@ -189,11 +247,6 @@ export default async function rotas(req, res, dado){
             return;
         }
 
-        res.statusCode = 204;
-
-        res.end();
-
-        return;
     };
 
     res.statusCode = 404;
