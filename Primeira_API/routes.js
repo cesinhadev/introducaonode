@@ -174,11 +174,6 @@ export default async function rotas(req, res, dado){
 
                 res.statusCode = 200;
                 
-                if(!id.value && !produto.value){
-                   
-                    res.statusCode = 404; 
-                }
-    
                 res.end(JSON.stringify(resposta));
 
                 return;
@@ -228,8 +223,7 @@ export default async function rotas(req, res, dado){
                    
                 res.statusCode = 404; 
             }
-
-            res.end();
+             res.end();
     
             return;
         }catch(erro){
