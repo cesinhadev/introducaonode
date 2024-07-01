@@ -27,6 +27,37 @@ export const Produto = sequelize.define('produto', {
 
 });
 
+const Pedido = sequelize.define('pedido', {
+    id:{
+        type:Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    valor_total:{
+        type:Sequelize.DOUBLE,
+        allowNull:false
+    },
+    estado:{
+        type:Sequelize.STRING,
+        allowNull:false
+    }
+});
+
+const ProdutosPedido = sequelize.define('produtos_pedido', {
+    id:{
+        type:Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true
+    },
+    quantidade:{
+        type:Sequelize.INTEGER,
+        allowNull:false
+    },
+    preco:{
+        type:Sequelize.DOUBLE,
+        allowNull:false
+    }
+});
 
 export async function criaProduto(produto){
     try{
@@ -95,3 +126,57 @@ export async function deletaProduto(id){
     }
     
 }
+
+Produto.belongsToMany(Pedido, { through: ProdutosPedido });
+Pedido.belongsToMany(Produto, { through: ProdutosPedido });
+
+export async function criarPedido(novoPedido){
+    try {
+        const pedido = await Pedido.create({
+            valor_total: novoPedido.valorTotal,
+            estado: 'ENCAMINHADO'
+        });
+
+        for(const prod of novoPedido.produtos){
+            const produto = await Produto.findByPk(prod.id);
+
+            if(produto.id.value){
+                pedido.addProduto(produto, { through: { quantidade: prod.quantidade, preco: produto.preco } });
+            }
+
+        }
+
+        console.log('Pedido criado com sucesso');
+
+        return pedido;
+
+    } catch (erro) {
+        console.log('Falha ao Criar Pedido', erro);
+        throw erro
+    }
+}
+
+export async function listaPedido(){
+    try {
+        const resultado = await ProdutosPedido.findAll();
+        console.log('Pedidos foram listados com sucesso!', resultado);
+        return resultado;
+        
+    } catch (erro) {
+        console.log('Falha ao Listar Pedidos', erro);
+        throw erro
+    }
+}
+
+export async function listaPedidoPorId(id){
+    try {
+        const resultado = await Pedido.findByPk(id);
+        console.log('Pedido foi listado com sucesso!', resultado);
+        return resultado;
+
+    } catch (erro) {
+        console.log('Falha ao Listar Pedidos', erro);
+        throw erro
+    }
+}
+
