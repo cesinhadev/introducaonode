@@ -2,7 +2,7 @@ import http from 'http';
 import fs from 'fs';
 import rotas from './routes.js';
 import sqlite3 from 'sqlite3';
-import { sequelize, listaPedido } from './models.js';
+import { sequelize, lePedidos, criaPedido} from './models.js';
 
 
 
@@ -38,8 +38,9 @@ fs.readFile('./mensagem.txt', 'utf-8', (erro, conteudo) =>{
 async function iniciaServidor(conteudo){
     await sequelize.sync();
 
-    //await criarPedido({ valorTotal: 13.00, produtos: [{ id: 1, quantidade: 2}, { id:6, quantidade: 5}] });
-    await listaPedido();
+    await criaPedido({ valorTotal: 13.00, produtos: [{ id: 1, quantidade: 2}, { id:2, quantidade: 5}] });
+    await criaPedido({ valorTotal: 12.00, produtos: [{ id: 1, quantidade: 5}, { id:2, quantidade: 3}] });
+    await lePedidos();
 
     const servidor = http.createServer((req, res) => {
         rotas(req, res, { conteudo } )
