@@ -1,22 +1,16 @@
-
 import sqlite3 from 'sqlite3';
 import express  from 'express';
+import bodyParser  from "body-parser";
+
+import { rotasProduto } from './routes/produtos.js'
 
 import { sequelize } from './models.js';
 
 const app = express();
 
-app.use((req, res, next) => {
-    console.log('Digite 9 para falar');
-    next();
-});
+app.use(bodyParser.json());
 
-app.use((req, res, next) => {
-    console.log('Problema resolvido');
-    res.send({
-        mensagem: 'Problema resolvido' 
-    });
-});
+app.use(rotasProduto);
 
 
 
